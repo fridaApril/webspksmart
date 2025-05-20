@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPK Metode SMART</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            background-color: #007bff;
+            color: white;
+            width: 80%;
+            max-width: 1200px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .left-section {
+            padding: 40px;
+            flex: 1;
+        }
+
+        .left-section h1 {
+            margin: 0 0 20px;
+            font-size: 28px;
+        }
+
+        .left-section p {
+            line-height: 1.8;
+        }
+
+        .right-section {
+            flex: 0.8;
+            background-color: white;
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-form {
+            width: 80%;
+            max-width: 350px;
+        }
+
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .login-form label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .login-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .dashboard-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            width: 100%;
+        }
+
+        .dashboard-container h2 {
+            color: #0a0a0a;
+        }
+
+        .centered-text {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            background-color: #0b4a8d;
+            padding: 15px 0;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #0056b3;
+        }
+
+        .navbar a:active {
+            background-color: #004085;
+        }
+
+        .content {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Form Login -->
+    <div class="container" id="login-form-container">
+        <div class="left-section">
+            <h1>Sistem Pendukung Keputusan Metode SMART</h1>
+            <p>
+                Sistem Pendukung Keputusan (SPK) merupakan sistem informasi interaktif yang menyediakan informasi, pemodelan, dan pemanipulasian data. Sistem ini digunakan untuk membantu pengambilan keputusan dalam situasi yang semi terstruktur dan situasi yang tidak terstruktur.
+            </p>
+            <p>
+                Simple Multi Attribute Rating Technique (SMART) menggunakan linear additive model untuk meramal nilai setiap alternatif. Metode SMART adalah metode yang fleksibel dalam pengambilan keputusan karena lebih sederhana dalam merepresentasikan semua kebutuhan oleh pembuat keputusan dengan cara menganalisis respons.
+            </p>
+        </div>
+        <div class="right-section">
+            <div class="login-form">
+                <h2>Login Account</h2>
+                <form id="login-form" onsubmit="return handleLogin(event)">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Masukkan username" required>
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Masukkan password" required>
+
+                    <button type="submit">Masuk</button>
+                </form>
+                <div class="error-message" id="error-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard setelah login -->
+    <div class="dashboard-container" id="dashboard">
+        <div class="centered-text">
+            <h3>SPK Pemilihan Susu Bagi Lansia </h3>
+        </div>
+
+        <!-- Perbarui Navbar -->
+<div class="navbar">
+    <a href="#" onclick="showContent('home')">Home</a>
+    <a href="#" onclick="showContent('data-kriteria')">Data Kriteria</a>
+    <a href="#" onclick="showContent('data-alternatif')">Data Alternatif</a>
+    <a href="#" onclick="showContent('nilai')">Nilai</a>
+    <a href="#" onclick="showContent('data-hasil-akhir')">Data Hasil Akhir</a>
+</div>
+
+
+        
+        <!-- Konten Halaman Home -->
+        <div id="home" class="content active">
+            <div style="display: flex; justify-content: space-between;">
+                <!-- Bagian Kiri (Bacaan) dengan kotak transparan di belakang teks -->
+                <div style="flex: 1; padding-right: 20px;">
+                    <div style="background-color: rgba(161, 180, 241, 0.212); padding: 20px; border-radius: 8px; color: rgb(3, 3, 3);">
+                        <h3>Mengapa Lansia Perlu Meminum Susu setelah Usia 51 Tahun?</h3>
+                        <p>Seiring bertambahnya usia, kebutuhan tubuh kita akan kalsium dan vitamin D meningkat, terutama untuk menjaga kesehatan tulang dan menghindari osteoporosis. Pada usia 51 tahun ke atas, tubuh kita mengalami penurunan dalam kemampuan menyerap kalsium dari makanan, yang menyebabkan tulang menjadi lebih rapuh dan rentan terhadap patah tulang.</p>
+                        <p>Oleh karena itu, meminum susu secara teratur sangat penting untuk memberikan asupan kalsium yang cukup bagi tubuh lansia. Susu juga kaya akan protein, yang mendukung pemeliharaan massa otot dan kekuatan tubuh secara keseluruhan. Selain itu, susu yang diperkaya dengan vitamin D membantu penyerapan kalsium, yang sangat penting bagi kesehatan tulang di usia lanjut. Dengan mengonsumsi susu setiap hari, lansia dapat memperkuat tulang, meningkatkan daya tahan tubuh, dan menjaga kualitas hidup yang lebih baik.</p>
+                    </div>
+                </div>
+
+                <!-- Bagian Kanan (Foto) -->
+                <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
+                    <img src="img/lansia meminum susu.jpg" alt="Lansia Meminum Susu" style="max-width: 100%; width: 650px; height: auto; border-radius: 10px;">
+                </div>
+            </div>
+        </div>
+
+<!-- Konten Halaman Data Kriteria -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Kriteria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #070707e7;
+            color: white;
+        }
+        .edit-btn {
+            padding: 5px 10px;
+            background-color: #0b4ad1e7;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .edit-btn:hover {
+            background-color: #0b4ad1e7;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 style="text-align: center;">Data Kriteria</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Kriteria</th>
+                <th>Bobot Kriteria</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="kriteria-body">
+            <tr>
+                <td>1</td>
+                <td>Kandungan Nutrisi</td>
+                <td>20%</td>
+                <td><button class="edit-btn" onclick="editKriteria(this)">Edit</button></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Kandungan kalsium</td>
+                <td>25%</td>
+                <td><button class="edit-btn" onclick="editKriteria(this)">Edit</button></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Kandungan Gula</td>
+                <td>15%</td>
+                <td><button class="edit-btn" onclick="editKriteria(this)">Edit</button></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Kandungan protein</td>
+                <td>15%</td>
+                <td><button class="edit-btn" onclick="editKriteria(this)">Edit</button></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Kandungan Lemak</td>
+                <td>10%</td>
+                <td><button class="edit-btn" onclick="editKriteria(this)">Edit</button></td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Harga</td>
+                <td>5%</td>
+                <td><button class="edit-btn" onclick="editKriteria(this)">Edit</button></td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Rasa</td>
+                <td>5%</td>
+                <td><button class="edit-btn" onclick="editKriteria(this)">Edit</button></td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Ketersediaan Produk</td>
+                <td>5%</td>
+                <td><button class="edit-btn" onclick="editKriteria(this)">Edit</button></td>
+            </tr>
+            <tr>
+                <td colspan="2"><b>Total</b></td>
+                <td><b>100%</b></td>
+                <td><b>1.00</b></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        function editKriteria(button) {
+            let row = button.parentElement.parentElement;
+            let nama = row.cells[1].innerText;
+            let bobot = row.cells[2].innerText;
+
+            let newNama = prompt("Edit Nama Kriteria:", nama);
+            let newBobot = prompt("Edit Bobot Kriteria (dalam %):", bobot.replace('%', ''));
+
+            if (newNama !== null) row.cells[1].innerText = newNama;
+            if (newBobot !== null) {
+                row.cells[2].innerText = newBobot + "%";
+                row.cells[3].innerText = (parseFloat(newBobot) / 100).toFixed(2);
+            }
+        }
+    </script>
+
+<!-- Konten Halaman Data Alternatif -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Alternatif</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 style="text-align: center;">Data Alternatif</h2>
+        
+        <!-- Form Input Data -->
+        <form class="mb-4">
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <label for="merk" class="form-label">Merk Susu</label>
+                    <input type="text" class="form-control" id="merk" placeholder="Masukkan Merk Susu">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Simpan</button>
+                </div>
+            </div>
+        </form>
+        
+        <!-- Tabel Data Alternatif -->
+        <table class="table table-bordered text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>No</th>
+                    <th>Merk Susu</th>
+                    <th>Kandungan Nutrisi</th>
+                    <th>Kandungan Kalsium</th>
+                    <th>Kandungan Gula</th>
+                    <th>Kandungan Protein</th>
+                    <th>Kandungan Lemak</th>
+                    <th>Harga</th>
+                    <th>Rasa</th>
+                    <th>Ketersediaan Produk</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Anline Gold Plus </td>
+                    <td>Vitamin D, Magnesium, dan Zinc</td>
+                    <td>500mg</td>
+                    <td>Rendah</td>
+                    <td>6g</td>
+                    <td>3g</td>
+                    <td>Rp.100.000/Rp.150.000</td>
+                    <td>Vanilla dan Cokelat</td>
+                    <td>Sangat Tersedia</td>
+                    <td>
+                        <button class="btn btn-success btn-sm">Input</button>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td>Ensure Gold HMB </td>
+                    <td>Vitamin K, Omega-3, Vitamin D</td>
+                    <td>500mg</td>
+                    <td>Sedang</td>
+                    <td>8g</td>
+                    <td>7g</td>
+                    <td>Rp.296.000</td>
+                    <td>Vanilla </td>
+                    <td>Cukup Tersedia</td>
+                    <td>
+                        <button class="btn btn-success btn-sm">Input</button>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td>Appeton 60 Plus </td>
+                    <td>Kalsium, fosfor dan multivitamin</td>
+                    <td>800mg</td>
+                    <td>Sedang</td>
+                    <td>7g</td>
+                    <td>8g</td>
+                    <td>Rp.248.000/Rp.466.800</td>
+                    <td>Vanilla dan Cokelat </td>
+                    <td>Terbatas</td>
+                    <td>
+                        <button class="btn btn-success btn-sm">Input</button>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>4</td>
+                    <td>Entrasol Platinum </td>
+                    <td>Kaya Kalsium, Fitokal dan Vitamin D</td>
+                    <td>600mg</td>
+                    <td>Rendah</td>
+                    <td>5g</td>
+                    <td>5g</td>
+                    <td>Rp.109.000</td>
+                    <td>Vanilla </td>
+                    <td>Sangat Tersedia</td>
+                    <td>
+                        <button class="btn btn-success btn-sm">Input</button>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>5</td>
+                    <td>Nestle Boost Optimum </td>
+                    <td>Vitamin D dan Kalsium</td>
+                    <td>500mg</td>
+                    <td>Rendah</td>
+                    <td>11g</td>
+                    <td>6g</td>
+                    <td>Rp.150.000/Rp.200.000</td>
+                    <td>Vanilla </td>
+                    <td>Cukup Tersedia</td>
+                    <td>
+                        <button class="btn btn-success btn-sm">Input</button>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>6</td>
+                    <td>Hilo Gold  </td>
+                    <td>Vitamin D </td>
+                    <td>500mg</td>
+                    <td>Rendah</td>
+                    <td>6g</td>
+                    <td>3g</td>
+                    <td>Rp.90.000/Rp.120.000</td>
+                    <td>Vanilla dan Cokelat </td>
+                    <td>Sangat Tersedia</td>
+                    <td>
+                        <button class="btn btn-success btn-sm">Input</button>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>7</td>
+                    <td>Prosteo Plus </td>
+                    <td>Vitamin D dan Prebiotk</td>
+                    <td>500mg</td>
+                    <td>Rendah</td>
+                    <td>7g</td>
+                    <td>4g</td>
+                    <td>Rp.130.000/Rp.180.000</td>
+                    <td>Vanilla dan Cokelat</td>
+                    <td>Cukup Tersedia</td>
+                    <td>
+                        <button class="btn btn-success btn-sm">Input</button>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>8</td>
+                    <td>Vidoran Xmart Active </td>
+                    <td>Kalsium, Fosfor dan Vitamin D</td>
+                    <td>400mg</td>
+                    <td>Rendah</td>
+                    <td>6g</td>
+                    <td>4g</td>
+                    <td>Rp.80.000/Rp.110.000</td>
+                    <td>Cokelat </td>
+                    <td>Sangat Tersedia</td>
+                    <td>
+                        <button class="btn btn-success btn-sm">Input</button>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>9</td>
+                    <td>Frisian Flag Kompleta </td>
+                    <td>Kalsium dan Vitamin D</td>
+                    <td>400mg</td>
+                    <td>Sedang</td>
+                    <td>6g</td>
+                    <td>5g</td>
+                    <td>Rp.60.000/Rp.90.000</td>
+                    <td>Original (plain) </td>
+                    <td>Sangat Tersedia</td>
+                    <td>
+                        <button class="btn btn-success btn-sm">Input</button>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>10</td>
+                    <td>Boneeto Adult Milk </td>
+                    <td>Kalsium dan Vitamin D</td>
+                    <td>500mg</td>
+                    <td>Sedang</td>
+                    <td>6g</td>
+                    <td>5g</td>
+                    <td>Rp.50.000/Rp.70.000</td>
+                    <td>Vanilla </td>
+                    <td>Sangat Tersedia</td>
+                    <td>
+                        <button class="btn btn-success btn-sm">Input</button>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                    </td>
+                </tr>
+
+                <!-- Tambahkan baris lain sesuai kebutuhan -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+
+<!-- Konten Halaman Nilai -->
+<div id="nilai" class="content">
+</div>
+    <h3>Data Nilai Alternatif</h3>
+     <form id="dataForm">
+        <div class="mb-3">
+            <label class="form-label">Merk Susu </label>
+            <select class="form-select" id="nama">
+                <option value="Anlene Gold Plus">Anlene Gold Plus</option>
+                <option value="Ensure Gold HMB">Ensure Gold HMB</option>
+                <option value="Appeton 60 Plus">Appeton 60 Plus</option>
+                <option value="Entrasol Platinum">Entrasol Platinum</option>
+                <option value="Nestle Boost Optimum">Nestle Boost Optimum</option>
+                <option value="Hilo Gold">Hilo Gold</option>
+                <option value="Prosteo Plus">Prosteo Plus</option>
+                <option value="Vidoran Xmart Active">Vidoran Xmart Active</option>
+                <option value="Frisian Flag Kompletol">Frisian Flag Kompleta</option>
+                <option value="Boneeto Adult Milk">Boneeto Adult Milk</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Kandungan Nutrisi</label>
+            <input type="number" class="form-control" id="Kandungan Nutrisi">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Kandungan Kalsium</label>
+            <input type="number" class="form-control" id="Kandungan Kalsium">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Kandungan Gula</label>
+            <input type="text" class="form-control" id="Kandungan Gula">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Kandungan Protein </label>
+            <input type="text" class="form-control" id="Kandungan Protein">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Kandungan Lemak </label>
+            <input type="text" class="form-control" id="Kandungan Lemak">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Harga</label>
+            <input type="text" class="form-control" id="Harga">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Rasa </label>
+            <input type="text" class="form-control" id="Rasa">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ketersediaan Produk</label>
+            <input type="text" class="form-control" id="Ketersediaan Produk">
+        </div>
+        <button type="button" class="btn btn-primary" onclick="simpanData()">Simpan</button> 
+    </form>
+    
+<h4 class="mt-4">Data Nilai</h4>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Merk Susu</th>
+                <th>Kandungan Nutrisi</th>
+                <th>Kandungan Kalsium</th>
+                <th>Kandungan Gula</th>
+                <th>Kandungan Protein</th>
+                <th>Kandungan Lemak</th>
+                <th>Harga</th>
+                <th>Rasa</th>
+                <th>Ketersediaan Produk</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="dataTable">
+            <!-- Data akan ditambahkan secara dinamis -->
+        </tbody>
+    </table>
+<script>
+        let dataList = [];
+        function simpanData() {
+            let Merk Susu = document.getElementById("Merk Susu").value;
+            let Kandungan Nutrisi = document.getElementById("Kandungan Nutrisi").value;
+            let Kandungan Kalsium = document.getElementById("Kandungan Kalsium").value;
+            let Kandungan Gula = document.getElementById("Kandungan Gula").value;
+            let Kandungan Protein = document.getElementById("Kandungan Protein").value;
+            let Kandungan Lemak = document.getElementById("Kandungan Lemak").value;
+            let Harga = document.getElementById("Harga").value;
+            let Rasa = document.getElementById("Rasa").value;
+            let Ketersediaan Produk = document.getElementById("Ketersediaan Produk").value;
+
+            let newData = { Merk Susu, Kandungan Nutrisi, Kandungan Kalsium, Kandungan Gula, Kandungan Protein, Kandungan Lemak, Harga, Rasa, Ketersediaan Produk };
+            dataList.push(newData);
+            updateTable();
+        }
+        function updateTable() {
+            let tableBody = document.getElementById("dataTable");
+            tableBody.innerHTML = "";
+            dataList.forEach((data, index) => {
+                let row = `<tr>
+                    <td>${index + 1}</td>
+                    <td>${data.Merk Susu}</td>
+                    <td>${data.Kandungan Nutrisi}</td>
+                    <td>${data.Kandungan Kalsium}</td>
+                    <td>${data.Kandungan Gula}</td>
+                    <td>${data.Kandungan Protein}</td>
+                    <td>${data.Kandungan Lemak}</td>
+                    <td>${data.Harga}</td>
+                    <td>${data.Rasa}</td>
+                    <td>${data.Ketersediaan Produk}</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" onclick="editData(${index})">Edit</button>
+                    </td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+        
+        function editData(index) {
+            let data = dataList[index];
+            document.getElementById("Merk Susu").value = data.Merk Susu;
+            document.getElementById("Kandungan Nutrisi").value = data.Kandungan Nutrisi;
+            document.getElementById("Kandungan Kalsium").value = data.Kandungan Kalsium;
+            document.getElementById("Kandungan Gula ").value = data.Kandungan Gula ;
+            document.getElementById("Kandungan Protein").value = data.Kandungan Protein;
+            document.getElementById("Kandungan Lemak").value = data.Kandungan Lemak;
+            document.getElementById("Harga").value = data.Harga;
+            document.getElementById("Rasa").value = data.Rasa;
+            document.getElementById("Ketersediaan Produk").value = data.Ketersediaan Produk;
+        }
+    </script>
+<!-- Konten Halaman Data Hasil Akhir -->
+<div id="data-hasil-akhir" class="content">
+    <h3>Data Hasil Akhir</h3>
+    <p>Hasil akhir dari metode SMART akan ditampilkan di sini.</p>
+</div>
+
+<!-- Tambahkan Script -->
+<script>
+    function showContent(page) {
+        // Menyembunyikan semua konten
+        const contents = document.querySelectorAll('.content');
+        contents.forEach(content => content.classList.remove('active'));
+
+        // Menampilkan konten yang dipilih
+        const activeContent = document.getElementById(page);
+        if (activeContent) {
+            activeContent.classList.add('active');
+        }
+    }
+</script>
+
+
+    <script>
+        // Username dan password yang valid
+        const validUsername = "admin123";
+        const validPassword = "pass123";
+
+        function handleLogin(event) {
+            event.preventDefault(); // Menghindari form submit
+
+            // Mendapatkan nilai username dan password
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Cek apakah username dan password cocok
+            if (username === validUsername && password === validPassword) {
+                // Menyembunyikan form login
+                document.getElementById('login-form-container').style.display = 'none';
+
+                // Menampilkan dashboard
+                document.getElementById('dashboard').style.display = 'block';
+            } else {
+                // Menampilkan pesan error jika login gagal
+                document.getElementById('error-message').textContent = 'Username atau password salah!';
+            }
+        }
+
+        function showContent(page) {
+            // Menyembunyikan semua konten
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Menampilkan konten yang dipilih
+            const activeContent = document.getElementById(page);
+            if (activeContent) {
+                activeContent.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
